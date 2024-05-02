@@ -1,67 +1,80 @@
 import { useState } from "react";
-import { TextField, Button, Typography, Grid } from "@mui/material";
-import { LockOutlined } from "@mui/icons-material";
+import axios from "axios";
+import { Grid, TextField, Button } from "@mui/material";
+import apiList from "../lib/apiList";
+import { Navigate } from "react-router-dom";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
+  const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
   });
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+  const [error, setError] = useState(null);
+
+  const handleInput = (key, value) => {
+    setLoginDetails({
+      ...loginDetails,
+      [key]: value,
+    });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add your login logic here
-    console.log(formData); // Pass the login data to the parent component
+    axios
+      .post(apiList.login, loginDetails)
+      .then((response) => {
+        if (response.data) {
+          localStorage.setItem("token", response.data.token);
+          <Navigate to="/protected" />;
+        } else {
+          setError("Invalid credentials");
+        }
+        console.log(response);
+      })
+      .catch((error) => {
+        setError("Internal Server Error");
+        console.log(error);
+      });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <Grid
         container
-        spacing={3}
-        direction="column"
+        spacing={2}
         alignItems="center"
-        padding={4}
-        xs={12}
+        justifyContent="center"
+        direction="column"
       >
-        <Grid item alignItems="center">
-          <LockOutlined color="secondary" />
-          <Typography variant="h6">Login</Typography>
-        </Grid>
-
         <Grid item>
           <TextField
-            fullWidth
             label="Username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
+            variant="outlined"
+            value={loginDetails.username}
+            onChange={(event) => handleInput("username", event.target.value)}
           />
         </Grid>
 
         <Grid item>
           <TextField
-            fullWidth
-            type="password"
             label="Password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
+            type="password"
+            variant="outlined"
+            value={loginDetails.password}
+            onChange={(event) => {
+              handleInput("password", event.target.value);
+            }}
           />
         </Grid>
 
         <Grid item>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained">
             Login
           </Button>
         </Grid>
+
+        {error && <div style={{ color: "red" }}>{error}</div>}
       </Grid>
     </form>
   );
