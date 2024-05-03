@@ -23,11 +23,17 @@ const Home = () => {
   };
 
   return (
-    <Grid container item>
+    // map users obtained from the api call
+    <Grid container direction="column" spacing={2} padding={2}>
+      <Typography>Users</Typography>
       {users.length > 0 ? (
-        users.map((obj) => {
-          <Grid item>{obj.user_name}</Grid>;
-        })
+        users.map((user, _id) => (
+          <Grid item key={_id}>
+            <Typography>
+              {user.username} {user.role}
+            </Typography>
+          </Grid>
+        ))
       ) : (
         <Typography>Users not found</Typography>
       )}

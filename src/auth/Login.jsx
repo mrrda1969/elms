@@ -25,8 +25,10 @@ const Login = () => {
       .post(apiList.login, loginDetails)
       .then((response) => {
         if (response.data) {
+          console.log(response.data);
           localStorage.setItem("token", response.data.token);
-          <Navigate to="/protected" />;
+          localStorage.setItem("role", response.data.role);
+          return <Navigate to="/protected" />;
         } else {
           setError("Invalid credentials");
         }
@@ -47,7 +49,7 @@ const Login = () => {
         justifyContent="center"
         direction="column"
       >
-        <Grid item>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
           <TextField
             label="Username"
             variant="outlined"
@@ -56,7 +58,7 @@ const Login = () => {
           />
         </Grid>
 
-        <Grid item>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
           <TextField
             label="Password"
             type="password"
