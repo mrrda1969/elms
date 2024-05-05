@@ -3,12 +3,13 @@ import Registration from "./auth/Register";
 import Login from "./auth/Login";
 import Home from "./components/Home";
 import Protected from "./components/Protected";
-import NavBar from "./components/Navbar";
+import TopNavbar from "./components/Navbar";
 
 function App() {
   return (
     <BrowserRouter basename="/app">
-      <NavBar />
+      <TopNavbar />
+      <hr />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Registration />} />
