@@ -1,14 +1,30 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { Grid, TextField, Button } from "@mui/material";
 import apiList from "../lib/apiList";
 import { Navigate } from "react-router-dom";
+import isAuth from "../lib/isAuth";
+import { SetPopupContext } from "../App";
+import {} from "react-icons";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  inputBox: {
+    width: "300px",
+  },
+}));
 
 const Login = () => {
+  const classes = useStyles();
+
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
   });
+
+  const [loggedin, setLoggedin] = useState(isAuth());
+
+  const setPopup = useContext(SetPopupContext);
 
   const [error, setError] = useState(null);
 
@@ -28,19 +44,38 @@ const Login = () => {
           console.log(response.data);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("role", response.data.role);
-          return <Navigate to="/protected" />;
+          localStorage.setItem("username", response.data.username);
+          setLoggedin(isAuth());
+
+          setPopup({
+            open: true,
+            severity: "success",
+            message: "Logged in successfully",
+          });
         } else {
           setError("Invalid credentials");
+          setPopup({
+            open: true,
+            severity: "error",
+            message: "Invalid credentials",
+          });
         }
         console.log(response);
       })
       .catch((error) => {
         setError("Internal Server Error");
+        setPopup({
+          open: true,
+          severity: "error",
+          message: error.response.data.message,
+        });
         console.log(error);
       });
   };
 
-  return (
+  return loggedin ? (
+    <Navigate to="/protected" />
+  ) : (
     <form onSubmit={handleSubmit}>
       <Grid
         container
@@ -54,6 +89,7 @@ const Login = () => {
             label="Username"
             variant="outlined"
             value={loginDetails.username}
+            className={classes.inputBox}
             onChange={(event) => handleInput("username", event.target.value)}
           />
         </Grid>
