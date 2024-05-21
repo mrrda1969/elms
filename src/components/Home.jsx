@@ -1,44 +1,32 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Grid, Typography } from "@mui/material";
-import apiList from "../lib/apiList";
+import { Button, Grid, Typography } from "@mui/material";
+import isAuth, { userRole } from "../lib/isAuth";
+import Student from "../pages/Student";
+import Admin from "../pages/Admin";
+import Facilitator from "../pages/Facilitator";
+import { useNavigate } from "react-router";
 
-const Home = () => {
-  useEffect(() => {
-    getData();
-  }, []);
+export const Home = () => {
+  const navigate = useNavigate();
 
-  const [users, setUsers] = useState([]);
-
-  const getData = () => {
-    axios
-      .get(apiList.users)
-      .then((response) => {
-        console.log(response.data);
-        setUsers(response.data);
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
+  const handleClick = (location) => {
+    navigate(location);
   };
-
   return (
-    // map users obtained from the api call
-    <Grid container direction="column" spacing={2} padding={2}>
-      <Typography>Users</Typography>
-      {users.length > 0 ? (
-        users.map((user, _id) => (
-          <Grid item key={_id}>
-            <Typography>
-              {user.username} {user.role}
-            </Typography>
-          </Grid>
-        ))
+    <Grid container padding={20}>
+      {isAuth() ? (
+        userRole() === "student" ? (
+          <Student />
+        ) : userRole() === "facilitator" ? (
+          <Facilitator />
+        ) : (
+          <Admin />
+        )
       ) : (
-        <Typography>Users not found</Typography>
+        <Grid item>
+          <Typography>Please login to Access your page</Typography>
+          <Button onClick={() => handleClick("/login")}>Login</Button>
+        </Grid>
       )}
     </Grid>
   );
 };
-
-export default Home;

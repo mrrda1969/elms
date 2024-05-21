@@ -1,12 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Registration from "./auth/Register";
 import Login from "./auth/Login";
-import Home from "./components/Home";
-import Protected from "./components/Protected";
-import TopNavbar from "./components/Navbar";
 import Logout from "./auth/Logout";
 import { createContext, useState } from "react";
 import MessagePopup from "./lib/MessagePopup";
+import { createTheme, ThemeProvider } from "@mui/material";
+import Navbar from "./components/Navbar";
+import { Home } from "./components/Home";
+import Adduser from "./pages/admin/addUser";
+import CreateCourse from "./pages/admin/createCourse";
 
 export const SetPopupContext = createContext();
 
@@ -16,26 +17,41 @@ function App() {
     severity: "",
     message: "",
   });
+
+  const theme = createTheme({
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: "none",
+          },
+        },
+      },
+    },
+  });
+
   return (
-    <BrowserRouter basename="/app">
-      <SetPopupContext.Provider value={setPopup}>
-        <TopNavbar />
-        <hr />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/register" element={<Registration />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/protected" element={<Protected />} />
-        </Routes>
-        <MessagePopup
-          open={popup.open}
-          setOpen={(status) => setPopup({ ...popup, open: status })}
-          severity={popup.severity}
-          message={popup.message}
-        />
-      </SetPopupContext.Provider>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter basename="app">
+        <SetPopupContext.Provider value={setPopup}>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/adduser" element={<Adduser />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/course" element={<CreateCourse />} />
+          </Routes>
+
+          <MessagePopup
+            open={popup.open}
+            setOpen={(status) => setPopup({ ...popup, open: status })}
+            severity={popup.severity}
+            message={popup.message}
+          />
+        </SetPopupContext.Provider>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

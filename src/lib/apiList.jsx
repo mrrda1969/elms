@@ -1,9 +1,10 @@
-export const server = "http://127.0.0.1:4400";
-
+export const server = "http://localhost:4400";
 const apiList = {
-  users: `${server}/users`,
-  signup: `${server}/users/adduser`,
   login: `${server}/users/login`,
+  signup: `${server}/users/new`,
+  courses: `${server}/courses`,
+  assignCourse: `${server}/courses/assign/facilitator`,
+  newcourse: `${server}/courses/new`,
 };
 
 export default apiList;

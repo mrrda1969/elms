@@ -1,34 +1,37 @@
+import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  createTheme,
+  CssBaseline,
+  IconButton,
+  InputAdornment,
+  TextField,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import { useContext, useState } from "react";
 import axios from "axios";
-import { Grid, TextField, Button } from "@mui/material";
 import apiList from "../lib/apiList";
-import { Navigate } from "react-router-dom";
 import isAuth from "../lib/isAuth";
 import { SetPopupContext } from "../App";
-import {} from "react-icons";
-import { makeStyles } from "@mui/styles";
+import { Navigate } from "react-router";
 
-const useStyles = makeStyles((theme) => ({
-  inputBox: {
-    width: "300px",
-  },
-}));
+const defaultTheme = createTheme();
 
 const Login = () => {
-  const classes = useStyles();
+  const [showPassword, setShowPassword] = useState(false);
+  const [loggedin, setLoggedin] = useState(isAuth());
+  const setPopup = useContext(SetPopupContext);
 
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
   });
 
-  const [loggedin, setLoggedin] = useState(isAuth());
-
-  const setPopup = useContext(SetPopupContext);
-
-  const [error, setError] = useState(null);
-
-  const handleInput = (key, value) => {
+  const handleChange = (key, value) => {
     setLoginDetails({
       ...loginDetails,
       [key]: value,
@@ -41,7 +44,6 @@ const Login = () => {
       .post(apiList.login, loginDetails)
       .then((response) => {
         if (response.data) {
-          console.log(response.data);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("role", response.data.role);
           localStorage.setItem("username", response.data.username);
@@ -53,68 +55,76 @@ const Login = () => {
             message: "Logged in successfully",
           });
         } else {
-          setError("Invalid credentials");
           setPopup({
             open: true,
             severity: "error",
             message: "Invalid credentials",
           });
         }
-        console.log(response);
       })
-      .catch((error) => {
-        setError("Internal Server Error");
+      .catch((err) => {
         setPopup({
           open: true,
           severity: "error",
-          message: error.response.data.message,
+          message: err.response.data.message,
         });
-        console.log(error);
       });
   };
-
   return loggedin ? (
-    <Navigate to="/protected" />
+    <Navigate to="/" />
   ) : (
-    <form onSubmit={handleSubmit}>
-      <Grid
-        container
-        spacing={2}
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <TextField
-            label="Username"
-            variant="outlined"
-            value={loginDetails.username}
-            className={classes.inputBox}
-            onChange={(event) => handleInput("username", event.target.value)}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            value={loginDetails.password}
-            onChange={(event) => {
-              handleInput("password", event.target.value);
-            }}
-          />
-        </Grid>
-
-        <Grid item>
-          <Button type="submit" variant="contained">
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: 8,
+            alignItems: "center",
+          }}
+        >
+          <Avatar>
+            <LockOutlined />
+          </Avatar>
+          <Typography component="h1" variant="h6">
             Login
-          </Button>
-        </Grid>
+          </Typography>
 
-        {error && <div style={{ color: "red" }}>{error}</div>}
-      </Grid>
-    </form>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              label="username"
+              margin="normal"
+              fullWidth
+              value={loginDetails.username}
+              onChange={(event) => handleChange("username", event.target.value)}
+            />
+
+            <TextField
+              label="Password"
+              margin="normal"
+              fullWidth
+              value={loginDetails.password}
+              onChange={(event) => handleChange("password", event.target.value)}
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+              Login
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 };
 

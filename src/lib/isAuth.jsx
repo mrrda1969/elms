@@ -2,11 +2,11 @@ const isAuth = () => {
   return localStorage.getItem("token");
 };
 
-export const userType = () => {
+export const userRole = () => {
   return localStorage.getItem("role");
 };
 
-export const userAcc = () => {
+export const username = () => {
   return localStorage.getItem("username");
 };
 
