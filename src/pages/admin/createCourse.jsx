@@ -1,43 +1,62 @@
-import { Box, Container, createTheme, TextField, Button } from "@mui/material";
+import {
+  Box,
+  Container,
+  createTheme,
+  TextField,
+  Button,
+  Input,
+} from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 import axios from "axios";
-import { createContext, useState } from "react";
+import { useContext, useState } from "react";
 import apiList from "../../lib/apiList";
 import { SetPopupContext } from "../../App";
 
 const theme = createTheme();
 
 const CreateCourse = () => {
-  const [courseData, setCourseData] = useState({
-    name: "",
-    courseCode: "",
-    description: "",
-  });
+  const [avatar, setAvatar] = useState(null);
 
-  const handleChange = (key, value) => {
-    setCourseData({
-      ...courseData,
-      [key]: value,
-    });
-  };
+  const [name, SetName] = useState("");
 
-  const setPopup = createContext(SetPopupContext);
+  const [courseCode, setCourseCode] = useState("");
+
+  const [description, setDescription] = useState("");
+
+  const courseData = new FormData();
+
+  courseData.append("name", name);
+
+  courseData.append("courseCode", courseCode);
+
+  courseData.append("image", avatar);
+
+  courseData.append("description", description);
+
+  const setPopup = useContext(SetPopupContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(courseData);
+
     axios
-      .post(apiList.newcourse, courseData)
+      .post(apiList.newcourse, courseData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
       .then((response) => {
         setPopup({
           open: true,
-          severity: "success",
           message: response.data.message,
+          severity: "success",
         });
       })
       .catch((err) => {
-        console.error(err);
+        setPopup({
+          open: true,
+          message: err.response.data.message,
+          severity: "error",
+        });
       });
+    // console.log(courseData);
   };
   return (
     <ThemeProvider theme={theme}>
@@ -51,18 +70,16 @@ const CreateCourse = () => {
               label="Course Name"
               margin="normal"
               fullWidth
-              value={courseData.name}
-              onChange={(event) => handleChange("name", event.target.value)}
+              value={name}
+              onChange={(event) => SetName(event.target.value)}
             />
 
             <TextField
               label="Course Code"
               margin="normal"
               fullWidth
-              value={courseData.courseCode}
-              onChange={(event) =>
-                handleChange("courseCode", event.target.value)
-              }
+              value={courseCode}
+              onChange={(event) => setCourseCode(event.target.value)}
             />
 
             <TextField
@@ -71,10 +88,14 @@ const CreateCourse = () => {
               multiline
               rows={3}
               fullWidth
-              value={courseData.description}
-              onChange={(event) =>
-                handleChange("description", event.target.value)
-              }
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+
+            <Input
+              type="file"
+              onChange={(e) => setAvatar(e.target.files[0])}
+              aria-label="Course Image"
             />
 
             <Button type="submit" variant="contained">

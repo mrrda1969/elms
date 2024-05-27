@@ -7,7 +7,7 @@ import { SetPopupContext } from "../App";
 const Admin = () => {
   useEffect(() => {
     getData();
-  });
+  }, []);
 
   const [menuValues, setMenuValues] = useState([]);
 
@@ -41,19 +41,19 @@ const Admin = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post(apiList.assignCourse, formData)
+      .post(apiList.newcourse, formData)
       .then((response) => {
         setPopup({
           open: true,
-          severity: "success",
           message: response.data.message,
+          severity: "success",
         });
       })
       .catch((err) => {
         setPopup({
           open: true,
-          severity: "error",
           message: err.response.data.message,
+          severity: "error",
         });
       });
   };
@@ -73,6 +73,7 @@ const Admin = () => {
               onChange={(event) => handleChange("staffId", event.target.value)}
             />
           </Grid>
+
           <Grid item>
             <TextField
               select

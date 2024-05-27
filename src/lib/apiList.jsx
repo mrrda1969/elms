@@ -5,6 +5,7 @@ const apiList = {
   courses: `${server}/courses`,
   assignCourse: `${server}/courses/assign/facilitator`,
   newcourse: `${server}/courses/new`,
+  courseImage: `${server}/courses/image/storage/20230928_103830.jpg`,
 };
 
 export default apiList;
