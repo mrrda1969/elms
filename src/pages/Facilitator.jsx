@@ -43,7 +43,12 @@ const Facilitator = () => {
             <Grid item key={course._id} xs={4}>
               <Card sx={{ maxWidth: 345 }}>
                 <CardActionArea>
-                  <CardMedia component="img" height="140" image="/src/img/card_img.jpg" alt={course.name} />
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={`${server}/storage/${course.image}`}
+                    alt={course.name}
+                  />
                   <CardContent
                     sx={{
                       height: 120,

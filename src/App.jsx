@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar";
 import { Home } from "./components/Home";
 import Adduser from "./pages/admin/addUser";
 import CreateCourse from "./pages/admin/createCourse";
+import SignUp from "./pages/student/SignUp";
+import Lookup from "./pages/student/LookupId";
 
 export const SetPopupContext = createContext();
 
@@ -41,6 +43,8 @@ function App() {
             <Route path="/adduser" element={<Adduser />} />
             <Route path="/login" element={<Login />} />
             <Route path="/course" element={<CreateCourse />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/lookup" element={<Lookup />} />
           </Routes>
 
           <MessagePopup

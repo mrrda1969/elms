@@ -8,6 +8,7 @@ import {
   CssBaseline,
   IconButton,
   InputAdornment,
+  Link,
   TextField,
   ThemeProvider,
   Typography,
@@ -121,6 +122,10 @@ const Login = () => {
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
               Login
             </Button>
+            <Typography>
+              Have you been shortlisted?{" "}
+              <Link href="lookup">Click here to complete signup.</Link>
+            </Typography>
           </Box>
         </Box>
       </Container>

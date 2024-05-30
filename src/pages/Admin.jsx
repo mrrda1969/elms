@@ -41,7 +41,7 @@ const Admin = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post(apiList.newcourse, formData)
+      .post(apiList.assignCourse, formData)
       .then((response) => {
         setPopup({
           open: true,
