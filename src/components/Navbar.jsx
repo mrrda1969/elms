@@ -16,6 +16,7 @@ const Navbar = () => {
           <Typography variant="h6" flexGrow={1}>
             Fundo
           </Typography>
+
           {isAuth() ? (
             userRole() === "student" ? (
               <>

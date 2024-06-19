@@ -70,6 +70,7 @@ const Admin = () => {
             <TextField
               label="Facilitator ID"
               value={formData.staffId}
+              margin="normal"
               onChange={(event) => handleChange("staffId", event.target.value)}
             />
           </Grid>
@@ -79,6 +80,8 @@ const Admin = () => {
               select
               label="Course"
               value={formData.courseCode}
+              margin="normal"
+              fullWidth
               onChange={(event) =>
                 handleChange("courseCode", event.target.value)
               }
